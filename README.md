@@ -1,41 +1,23 @@
-# 📦 Database Backup
+# 📦 kwenziwa/database-backup
 
-**Database Backup** is a Laravel package that automates database backups and uploads them to **Google Drive**.
-It seamlessly integrates with [Spatie's Laravel Backup](https://github.com/spatie/laravel-backup) to handle database dumps and uses the official Google API Client to upload your backups.
+A Laravel package to automate database backups and upload them to **Google Drive**.
+Seamlessly integrates with [Spatie's Laravel Backup](https://github.com/spatie/laravel-backup) and the Google API client.
+Ideal for keeping your backups safe and accessible in the cloud.
 
 ---
 
 ## 🚀 Features
 
-✅ Backup your database using Spatie's Laravel Backup  
-✅ Automatically upload the latest backup to Google Drive  
-✅ Clean and modern Laravel 12+ compatible  
-✅ Easy installation and configuration
+- 🎯 Backup your database with Spatie’s Laravel Backup
+- ☁️ Upload the latest backup automatically to Google Drive
+- 🔒 Fully Laravel 12+ compatible
+- 🔧 Easy configuration and installation
 
 ---
 
-## 🔧 Installation
+## 📥 Installation
 
-Install via Composer (for local development):
-
-```bash
-composer require kwenziwa/database-backup:@dev --with-all-dependencies
-```
-
-If using as a path repository:
-
-1️⃣ Add to your Laravel app's `composer.json`:
-
-```json
-"repositories": [
-    {
-        "type": "path",
-        "url": "packages/kwenziwa/database-backup"
-    }
-]
-```
-
-2️⃣ Then:
+Install the package via Composer:
 
 ```bash
 composer require kwenziwa/database-backup
@@ -45,32 +27,61 @@ composer require kwenziwa/database-backup
 
 ## ⚙️ Configuration
 
-1️⃣ Publish the config:
+### Step 1: Publish Config
 
 ```bash
 php artisan vendor:publish --tag=config
 ```
 
-2️⃣ Set your **Google Drive Folder ID** in `.env`:
+Creates `config/database-backup.php`.
 
-```bash
-GOOGLE_DRIVE_FOLDER_ID=your-google-drive-folder-id
-```
+### Step 2: Google API Credentials
 
-3️⃣ Ensure your **Google API credentials** are saved at:
+1️⃣ Create a **Google Service Account** via the [Google Cloud Console](https://console.cloud.google.com/).  
+   - Go to [Google Cloud Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts)  
+   - Click **Create Service Account**  
+   - Follow the prompts, download the **JSON key file**.
+
+2️⃣ Enable the **Google Drive API**:  
+   - Go to [Google Drive API](https://console.cloud.google.com/apis/library/drive.googleapis.com)  
+   - Click **Enable**.
+
+3️⃣ Save the JSON key as:
 
 ```
 storage/app/google-drive/credentials.json
 ```
 
+4️⃣ Share your Google Drive folder with the email from the JSON key:
+
+- Find the `client_email` in the JSON.
+- Go to your Google Drive folder.
+- Click **Share** → paste the `client_email`.
+- Grant **Editor** access.
+
+### Step 3: .env Settings
+
+Add your Google Drive folder ID in `.env`:
+
+```bash
+GOOGLE_DRIVE_FOLDER_ID=your-google-drive-folder-id
+GOOGLE_DRIVE_CREDENTIALS=storage/app/google-drive/credentials.json
+```
+
 ---
 
-## 📥 Usage
+## 🚀 Usage
 
-Run the backup and upload to Google Drive:
+Backup your database and upload to Google Drive:
 
 ```bash
 php artisan google-drive:backup
+```
+
+Test Google Drive connection:
+
+```bash
+php artisan google-drive:test
 ```
 
 ---
@@ -79,31 +90,25 @@ php artisan google-drive:backup
 
 - PHP 8.2+
 - Laravel 10, 11, or 12
-- Google API Credentials (OAuth2 JSON)
-- Spatie Laravel Backup 9.x
+- [Spatie Laravel Backup](https://github.com/spatie/laravel-backup) v9.2.8+
+- [Google API Client](https://github.com/googleapis/google-api-php-client)
 
 ---
 
-## 🧱 Package Structure
+## 📖 Documentation
 
-```
-/src
-    /Console
-        BackupAndUploadCommand.php
-    /Services
-        GoogleDriveUploader.php
-    BackupServiceProvider.php
-/config
-    database-backup.php
-composer.json
-```
+| Command                               | Description                                     |
+| ------------------------------------ | ----------------------------------------------- |
+| `php artisan google-drive:backup`    | Backup database and upload to Google Drive      |
+| `php artisan google-drive:test`      | Test Google Drive connection and credentials    |
+| `php artisan vendor:publish --tag=config` | Publish the package config file                 |
 
 ---
 
-## 👤 Author
+## 🙌 Author
 
 Developed by [Kwenziwa Khanyile](https://github.com/kwenziwa)  
-Feel free to contribute or open issues for improvements!
+Feel free to contribute, submit issues, or fork the repository!
 
 ---
 
