@@ -15,25 +15,28 @@ class TestGoogleDriveCommand extends Command
         $this->info('Testing Google Drive connection...');
 
         try {
-            $uploader = new GoogleDriveUploader();
-            $this->info('✅ Google Drive connection successful.');
+            $client = new \Google\Client();
+            $client->setAuthConfig(config('database-backup.google_drive.credentials_path'));
+            $client->addScope(\Google\Service\Drive::DRIVE);
+            $service = new \Google\Service\Drive($client);
 
-            $folderId = config('database-backup.folder_id');
-            $this->info("Folder ID from config: $folderId");
-
-            \Log::info('Google Drive Uploader instance:', [
-                'uploader' => $uploader,
-                'folder_id' => $folderId,
+            // Try a simple API call: list files
+            $files = $service->files->listFiles([
+                'pageSize' => 5,
+                'fields' => 'files(id, name)'
             ]);
 
-            dd($uploader);
+            if (count($files->getFiles()) > 0) {
+                $this->info("✅ Google Drive connection successful. Here are some files:");
+                foreach ($files->getFiles() as $file) {
+                    $this->line("- {$file->getName()} ({$file->getId()})");
+                }
+            } else {
+                $this->warn("Connected, but no files found in the Google Drive.");
+            }
 
         } catch (\Exception $e) {
-            \Log::error('Error connecting to Google Drive:', [
-                'error' => $e->getMessage(),
-            ]);
-            $this->error('❌ Error connecting to Google Drive: ' . $e->getMessage());
-
+            $this->error("❌ Error connecting to Google Drive: " . $e->getMessage());
         }
     }
 }

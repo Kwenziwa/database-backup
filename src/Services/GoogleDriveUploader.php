@@ -13,7 +13,7 @@ class GoogleDriveUploader
     public function __construct()
     {
         $client = new Google_Client();
-        $client->setAuthConfig(storage_path('app/google-drive/credentials.json'));
+        $client->setAuthConfig(config('database-backup.google_drive.credentials_path'));
         $client->addScope(Google_Service_Drive::DRIVE_FILE);
         $client->setAccessType('offline');
 
