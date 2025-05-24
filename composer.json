@@ -1,0 +1,33 @@
+{
+    "name": "kwenziwa/database-backup",
+    "description": "A Laravel package to backup the database and upload to Google Drive.",
+    "type": "library",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Kwenziwa Khanyile",
+            "email": "kwenziwalizwi@gmail.com",
+            "homepage": "https://github.com/kwenziwa"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "google/apiclient": "^2.0",
+        "spatie/laravel-backup": "^9.2.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "DatabaseBackup\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DatabaseBackup\\BackupServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "license": "MIT"
+}
