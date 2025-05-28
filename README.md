@@ -1,7 +1,7 @@
 # 📦 kwenziwa/database-backup
 
-A Laravel package to automate database backups and upload them to **Google Drive**.
-Seamlessly integrates with [Spatie's Laravel Backup](https://github.com/spatie/laravel-backup) and the Google API client.
+A Laravel package to automate database backups and upload them to **Google Drive**.  
+Seamlessly integrates with [Spatie's Laravel Backup](https://github.com/spatie/laravel-backup) and the Google API client.  
 Ideal for keeping your backups safe and accessible in the cloud.
 
 ---
@@ -35,37 +35,93 @@ php artisan vendor:publish --tag=config
 
 Creates `config/database-backup.php`.
 
-### Step 2: Google API Credentials
+---
 
-1️⃣ Create a **Google Service Account** via the [Google Cloud Console](https://console.cloud.google.com/).  
-   - Go to [Google Cloud Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts)  
-   - Click **Create Service Account**  
-   - Follow the prompts, download the **JSON key file**.
+## 🔑 Google API Setup
 
-2️⃣ Enable the **Google Drive API**:  
-   - Go to [Google Drive API](https://console.cloud.google.com/apis/library/drive.googleapis.com)  
-   - Click **Enable**.
+### 1️⃣ Create Google API Credentials
 
-3️⃣ Save the JSON key as:
+- Go to the [Google Cloud Console](https://console.cloud.google.com/).
+- Navigate to [Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts).
+- Click **Create Service Account**.
+- Follow the prompts:
+  - Name: e.g., `Database Backup Service`
+  - Role: Choose **Editor** (or more restricted if desired).
+- After creating the service account:
+  - Go to the **Keys** tab.
+  - Click **Add Key → Create New Key → JSON**.
+  - Download the JSON key file.
+
+### 2️⃣ Enable Google Drive API
+
+- Visit the [Google Drive API page](https://console.cloud.google.com/apis/library/drive.googleapis.com) and click **Enable**.
+- For detailed step-by-step instructions, see this guide:  
+  [How to Enable Google Drive API on the Google Console](https://www.cybrosys.com/blog/how-to-enable-google-drive-api-on-the-google-console)
+
+### 3️⃣ Save the Credentials File
+
+Move the downloaded JSON key file to:
 
 ```
 storage/app/google-drive/credentials.json
 ```
 
-4️⃣ Share your Google Drive folder with the email from the JSON key:
-
-- Find the `client_email` in the JSON.
-- Go to your Google Drive folder.
-- Click **Share** → paste the `client_email`.
-- Grant **Editor** access.
-
-### Step 3: .env Settings
-
-Add your Google Drive folder ID in `.env`:
+Ensure the path matches this in your `.env`:
 
 ```bash
-GOOGLE_DRIVE_FOLDER_ID=your-google-drive-folder-id
 GOOGLE_DRIVE_CREDENTIALS=storage/app/google-drive/credentials.json
+```
+
+---
+
+## 📁 Set Up Google Drive Access
+
+### 4️⃣ Get Your Google Drive Folder ID
+
+- Create a folder in Google Drive (e.g., `Database Backups`).
+- Right-click the folder → **Get Link** → Copy the long ID in the URL:
+  
+  Example:  
+  ```
+  https://drive.google.com/drive/folders/1a2B3cD4EfG5hI6Jk7LmNOPQr8TuvWXy
+  ```
+  The **folder ID** is:
+  ```
+  1a2B3cD4EfG5hI6Jk7LmNOPQr8TuvWXy
+  ```
+
+Add this to your `.env`:
+
+```bash
+GOOGLE_DRIVE_FOLDER_ID=1a2B3cD4EfG5hI6Jk7LmNOPQr8TuvWXy
+```
+
+---
+
+### 5️⃣ Share Folder with Service Account
+
+- Open your Google Drive folder.
+- Click **Share**.
+- In the **People** field, paste the `client_email` from your JSON file (example below).
+- Give **Editor** access.
+
+---
+
+### 🔍 Example `credentials.json` Structure
+
+```json
+{
+  "type": "service_account",
+  "project_id": "your-project-id",
+  "private_key_id": "your-private-key-id",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nABC...\n-----END PRIVATE KEY-----\n",
+  "client_email": "database-backup@your-project.iam.gserviceaccount.com",
+  "client_id": "1234567890",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/database-backup%40your-project.iam.gserviceaccount.com"
+}
 ```
 
 ---
